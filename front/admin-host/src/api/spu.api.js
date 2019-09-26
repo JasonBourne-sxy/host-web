@@ -9,6 +9,19 @@ class SpuApi {
     return axios.post('/get_detail',
       {sys_id: sysId, check_type: check_type})
   }
+
+  static getMonitorOperateDetails(data) {
+    return axios.post('/get_monitor_instance', data)
+  }
+
+  static insertOrUpdateInstance(data) {
+    return axios.post('/insert_or_update_instance', data)
+  }
+
+  static deleteInstance(data) {
+    return axios.post('/delete_instance', data)
+  }
+
 }
 
 export default SpuApi

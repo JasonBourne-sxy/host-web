@@ -6,6 +6,15 @@
         <el-input placeholder="" v-model="sysName" style="width: 150px"></el-input>
         <label>IP：</label>
         <el-input placeholder="" v-model="ip" style="width: 150px"></el-input>
+        <label>检测类型：</label>
+        <el-select v-model="checkType" placeholder="请选择">
+          <el-option
+            v-for="item in checkOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
         <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
         <el-button type="primary" icon="el-icon-refresh" @click="refresh">重置</el-button>
         <el-button type="primary" icon="el-icon-search" @click="add">新增</el-button>
@@ -13,6 +22,7 @@
       <el-main>
         <el-table
           :data="tableData"
+          v-loading="loading"
           style="width: 100%;height: 92%;"
         >
           <el-table-column
@@ -136,7 +146,7 @@
             </el-form>
             <div slot="footer" class="dialog-footer">
               <el-button @click="dialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+              <el-button type="primary" @click="handleSubmit">确 定</el-button>
             </div>
           </el-dialog>
         </template>
@@ -151,6 +161,7 @@
     export default {
         data() {
             return {
+                loading:false,
                 treeData: [],
                 tableData: [],
                 dateValue: [new Date(), new Date()],
@@ -161,6 +172,7 @@
                 currentPage: 4,
                 dialogFormVisible: false,
                 form: {
+                    id:'',
                     ip: '',
                     port: '',
                     type: '',
@@ -170,7 +182,21 @@
                 },
                 formLabelWidth: '120px',
                 ip: '',
-                sysName: ''
+                sysName: '',
+                checkType:'',
+                checkOptions: [{
+                    value: 'ping',
+                    label: 'ping'
+                },{
+                    value: 'TCP',
+                    label: 'TCP'
+                }, {
+                    value: '半连接',
+                    label: '半连接'
+                }, {
+                    value: '自定义',
+                    label: '自定义'
+                }],
             }
         },
         created() {
@@ -191,12 +217,32 @@
                 this.getTableList(data.id, data.type);
             },
             deleteRow(index, rows) {
-                rows.splice(index, 1);
+                this.$confirm('是否确认删除?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    let params = {id:rows[index].id};
+                    spuApi.deleteInstance(params).then(res=>{
+                        rows.splice(index, 1);
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        });
+                    })
+
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+                });
             },
             editorRow(index, rows) {
                 let data = rows[0];
+                this.form.id = data.id;
                 this.form.ip = data.ip;
-                this.form.port = '';
+                this.form.port = data.port;
                 this.form.type = data.type;
                 this.form.timeNum = data.interval;
                 this.form.describe = data.description;
@@ -218,12 +264,33 @@
                 this.dialogFormVisible = true;
             },
             search() {
-
+                this.loading = true;
+                let params = {ip:this.ip,sys_name:this.sysName,check_type:this.checkType}
+                spuApi.getMonitorOperateDetails(params).then(res=>{
+                    this.tableData = res.data;
+                    this.loading = false;
+                })
+            },
+            handleSubmit(){
+                this.dialogFormVisible = false
+                let params = {
+                    id:this.form.id,
+                    ip:this.form.ip,
+                    port:this.form.port,
+                    type:this.form.type,
+                    timeNum:this.form.timeNum,
+                    delivery:this.form.delivery,
+                    describe:this.form.describe,
+                }
+                spuApi.insertOrUpdateInstance(params).then(res=>{
+                    console.log(res)
+                })
             },
             refresh() {
                 this.sysName = '';
                 this.ip = '';
                 this.dateValue = [new Date(), new Date()]
+                this.checkType = '';
             }
         }
     };
