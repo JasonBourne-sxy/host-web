@@ -12,7 +12,8 @@
       <host-main v-if="activeIndex === '1'"></host-main>
       <host-operate v-if="activeIndex === '2'"></host-operate>
       <system-info v-if="activeIndex === '3'"></system-info>
-      <host-history v-if="activeIndex === '4'"></host-history>
+      <hostrun-history v-if="activeIndex === '4'"></hostrun-history>
+
       <!--   <div id="myChart" style="width: 100%;height: 300px"></div>   -->
     </el-main>
   </el-container>
@@ -46,8 +47,10 @@
             }
         }
     }
+    $(document).ready(function () {
+        $('ul').append('<a href="./tmp.vue" target="_blank">dsda</a>')
+    });
 </script>
-
 <style>
   .el-header {
     background-color: #B3C0D1;
