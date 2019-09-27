@@ -21,6 +21,9 @@ class SpuApi {
   static deleteInstance(data) {
     return axios.post('/delete_instance', data)
   }
+  static query_sys_info(data) {
+    return axios.post('/query_sys_info', data)
+  }
 
 }
 

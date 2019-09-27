@@ -47,9 +47,6 @@
             }
         }
     }
-    $(document).ready(function () {
-        $('ul').append('<a href="./tmp.vue" target="_blank">dsda</a>')
-    });
 </script>
 <style>
   .el-header {

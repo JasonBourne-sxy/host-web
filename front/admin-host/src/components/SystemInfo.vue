@@ -4,8 +4,8 @@
       <el-header style="text-align: left; font-size: 12px">
         <label>系统名称：</label>
         <el-input placeholder="" v-model="sysName" style="width: 150px"></el-input>
-        <label>IP：</label>
-        <el-input placeholder="" v-model="ip" style="width: 150px"></el-input>
+        <label>管理员：</label>
+        <el-input placeholder="" v-model="name" style="width: 150px"></el-input>
         <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
         <el-button type="primary" icon="el-icon-refresh" @click="refresh">重置</el-button>
         <el-button type="primary" icon="el-icon-search" @click="add">新增</el-button>
@@ -13,27 +13,31 @@
       <el-main>
         <el-table
           :data="tableData"
-          style="width: 100%;height: 92%;"
-        >
+          style="width: 100%;height: 98%;">
           <el-table-column
-            prop="check_result"
+            prop="name"
             label="系统名称"
-            min-width="33%" >
+            min-width="23%">
           </el-table-column>
           <el-table-column
-            prop="check_time"
-            label="联系人"
-            min-width="33%">
+            prop="manager"
+            label="管理员"
+            min-width="20%">
           </el-table-column>
           <el-table-column
-            prop="interval"
+            prop="telephone"
             label="联系电话"
-            min-width="33%">
+            min-width="30%">
+          </el-table-column>
+          <el-table-column
+            prop="job_number"
+            label="工号"
+            min-width="13%">
           </el-table-column>
           <el-table-column
             fixed="right"
             label="操作"
-            width="150">
+            min-width="13%">
             <template slot-scope="scope">
               <el-button
                 @click.native.prevent="editorRow(scope.$index, tableData)"
@@ -53,19 +57,6 @@
           </el-table-column>
         </el-table>
         <template>
-          <div class="block">
-            <el-pagination
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="currentPage"
-              :page-sizes="[10, 20, 50, 100]"
-              :page-size="100"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="400">
-            </el-pagination>
-          </div>
-        </template>
-        <template>
           <el-dialog title="新增" :visible.sync="dialogFormVisible">
             <el-form ref="form" :model="form" label-width="80px">
               <el-form-item label="IP">
@@ -73,14 +64,6 @@
               </el-form-item>
               <el-form-item label="端口">
                 <el-input v-model="form.port"></el-input>
-              </el-form-item>
-              <el-form-item label="类型">
-                <el-select v-model="form.type" placeholder="请选择类型">
-                  <el-option label="ping" value="ping"></el-option>
-                  <el-option label="tcp" value="tcp"></el-option>
-                  <el-option label="tcp" value="半连接"></el-option>
-                  <el-option label="tcp" value="自定义"></el-option>
-                </el-select>
               </el-form-item>
               <el-form-item label="间隔">
                 <el-input v-model="form.timeNum"></el-input>
@@ -118,11 +101,11 @@
                 dialogFormVisible: false,
                 form: {
                     ip: '',
-                    port: '',
-                    type: '',
-                    timeNum: '',
+                    sys_name: '',
+                    name: '',
+                    telephone: '',
+                    job_number: '',
                     delivery: false,
-                    describe: ''
                 },
                 formLabelWidth: '120px',
                 ip: '',
@@ -174,7 +157,12 @@
                 this.dialogFormVisible = true;
             },
             search() {
-
+                this.loading = true;
+                let params = {ip: this.ip, sys_name: this.sysName, check_type: this.checkType};
+                spuApi.query_sys_info(params).then(res => {
+                    this.tableData = res.data;
+                    this.loading = false;
+                })
             },
             refresh() {
                 this.sysName = '';
