@@ -23,7 +23,8 @@
         <el-table
           :data="tableData"
           v-loading="loading"
-          style="width: 100%;height: 98%;"
+          height="98%"
+          style="width: 100%;"
         >
           <el-table-column
             prop="sys_name"
@@ -66,14 +67,14 @@
             width="150">
             <template slot-scope="scope">
               <el-button
-                @click.native.prevent="editorRow(scope.$index, tableData)"
+                @click.native.prevent="editorRow(scope.$index, scope.row)"
                 type="text"
                 icon="el-icon-edit"
                 size="small">
                 编辑
               </el-button>
               <el-button
-                @click.native.prevent="deleteRow(scope.$index, tableData)"
+                @click.native.prevent="deleteRow(scope.$index,tableData, scope.row)"
                 type="text"
                 icon="el-icon-delete"
                 size="small">
@@ -188,13 +189,13 @@
             handleNodeClick(data) {
                 this.getTableList(data.id, data.type);
             },
-            deleteRow(index, rows) {
+            deleteRow(index, rows,row) {
                 this.$confirm('是否确认删除?', '提示', {
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                     type: 'warning'
                 }).then(() => {
-                    let params = {id: rows[index].id};
+                    let params = {id: row.id};
                     spuApi.deleteInstance(params).then(res => {
                         rows.splice(index, 1);
                         this.$message({
@@ -210,8 +211,8 @@
                     });
                 });
             },
-            editorRow(index, rows) {
-                let data = rows[0];
+            editorRow(index, row) {
+                let data = row;
                 this.form.id = data.id;
                 this.form.ip = data.ip;
                 this.form.port = data.port;
