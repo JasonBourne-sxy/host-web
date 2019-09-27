@@ -17,6 +17,7 @@ from web.interface.query_data import *
 from web.service.instance_service import query_instance_by_condition, insert_or_update_instance, delete_instance
 from web.service.monitor_detail import get_monitor_history_data
 from web.service.monitor_visualization_service import get_monitor_visualization
+from web.service.system_info_service import query_sys_info
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -119,6 +120,22 @@ def get_monitor_instance():
     return_detail = query_instance_by_condition(sys_id=sys_id, ip=ip,
                                                 check_type=check_type,
                                                 sys_name=sys_name)
+    response = make_response()
+    response.data = json.dumps(return_detail)
+    response.headers['Content-Type'] = 'application/json'
+    return response
+
+
+@app.route('/query_sys_info', methods=['POST'])
+@cross_origin()
+def get_sys_info():
+    """
+    ocr interface for python
+    :return:
+    """
+    data_byte = request.data  # 获取 JSON 数据
+    json_obj = json.loads(str(data_byte, encoding='utf8'))
+    return_detail = query_sys_info(json_obj)
     response = make_response()
     response.data = json.dumps(return_detail)
     response.headers['Content-Type'] = 'application/json'

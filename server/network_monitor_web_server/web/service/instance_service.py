@@ -46,14 +46,15 @@ def query_instance_by_condition(sys_id=None, sys_name=None, ip=None, check_type=
     :return:
     """
     base_sql = QUERY_MONITOR_INSTANCE
-    if sys_id is not None:
+    if sys_id is not None and len(sys_id) > 0:
         base_sql = base_sql + """and sys_id = '%s'""" % sys_id
-    if sys_name is not None:
+    if sys_name is not None and len(sys_name) > 0:
         base_sql = base_sql + "and sys_name like '%" + sys_name + "%'"
-    if ip is not None:
+    if ip is not None and len(ip) > 0:
         base_sql = base_sql + "and ip like '%" + ip + "%'"
-    if check_type is not None:
-        base_sql = base_sql + "and sys_name like '%" + check_type + "%'"
+    if check_type is not None and len(check_type) > 0:
+        base_sql = base_sql + "and `type` like '%" + check_type + "%'"
+    base_sql = base_sql+'order by sys_name limit 200;'
     result = DB_POOL.select(sql=base_sql)
     return result
 
