@@ -23,7 +23,8 @@
         <el-table
           :data="tableData"
           v-loading="loading"
-          style="width: 100%;height: 98%;"
+          height="98%"
+          style="width: 100%;"
         >
           <el-table-column
             prop="sys_name"
