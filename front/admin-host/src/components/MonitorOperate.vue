@@ -101,12 +101,13 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="系统名称">
-                <el-select v-model="form.sys_name" placeholder="请系统名称">
-                  <el-option label="系统名称" value="系统名称"></el-option>
-                  <el-option label="系统名称" value="系统名称"></el-option>
-                  <el-option label="系统名称" value="系统名称"></el-option>
-                  <el-option label="系统名称" value="系统名称"></el-option>
-
+                <el-select v-model="form.sysInfo" placeholder="请系统名称">
+                  <el-option
+                    v-for="item in SysInfoOptions"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id">
+                  </el-option>
                 </el-select>
               </el-form-item>
               <el-form-item label="间隔">
@@ -150,6 +151,7 @@
                     port: '',
                     type: '',
                     timeNum: '',
+                    sysInfo:'',
                     delivery: false,
                     describe: ''
                 },
@@ -170,10 +172,13 @@
                     value: '自定义',
                     label: '自定义'
                 }],
+                SysInfoOptions:[],
+                sysInfo:''
             }
         },
         created() {
             this.getTreeInfo();
+            this.getSysInfoData();
         },
         methods: {
             getTreeInfo() {
@@ -218,6 +223,7 @@
                 this.form.port = data.port;
                 this.form.type = data.type;
                 this.form.timeNum = data.interval;
+                this.form.sysInfo = data.sys_id;
                 this.form.describe = data.description;
                 this.dialogFormVisible = true;
                 console.log(this.form);
@@ -233,6 +239,7 @@
                 this.form.port = '';
                 this.form.type = '';
                 this.form.timeNum = '';
+                this.form.sysInfo = '';
                 this.form.describe = '';
                 this.dialogFormVisible = true;
             },
@@ -251,12 +258,19 @@
                     ip: this.form.ip,
                     port: this.form.port,
                     type: this.form.type,
+                    sysInfo:this.form.sysInfo,
                     timeNum: this.form.timeNum,
                     delivery: this.form.delivery,
                     describe: this.form.describe,
                 };
                 spuApi.insertOrUpdateInstance(params).then(res => {
                     console.log(res)
+                })
+            },
+            getSysInfoData(){
+                spuApi.query_sys_info({id:""}).then(res=>{
+                    console.log(res)
+                    this.SysInfoOptions = res.data
                 })
             },
             refresh() {
