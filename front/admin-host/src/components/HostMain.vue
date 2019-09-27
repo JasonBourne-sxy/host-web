@@ -7,7 +7,9 @@
     <el-main>
       <el-table
         :data="tableData"
-        style="width: 100%;height: 100%;"
+        height="98%"
+        v-loading="loading"
+        style="width: 100%;"
       >
         <el-table-column
           prop="ip"
@@ -67,6 +69,7 @@
     export default {
         data() {
             return {
+                loading:false,
                 treeData: [],
                 tableData: [],
                 dateValue: [new Date(), new Date()],
@@ -99,8 +102,10 @@
                 });
             },
             getTableList(sysId,check_type) {
+                this.loading = true;
                 spuApi.getTableDetails(sysId,check_type).then(res => {
                     this.tableData = res.data;
+                    this.loading = false;
                 })
             },
             handleNodeClick(data) {

@@ -13,7 +13,8 @@
       <el-main>
         <el-table
           :data="tableData"
-          style="width: 100%;height: 98%;">
+          height="98%"
+          style="width: 100%;">
           <el-table-column
             prop="name"
             label="系统名称"
