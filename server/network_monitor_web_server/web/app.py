@@ -81,6 +81,7 @@ def insert_or_update_instance():
     """
     data_byte = request.data  # 获取 JSON 数据
     json_obj = json.loads(str(data_byte, encoding='utf8'))
+    print(json_obj)
     result = insert_or_update_instance(json_obj)
     response = make_response()
     response.data = json.dumps(result)
@@ -97,6 +98,7 @@ def delete_instance():
     """
     data_byte = request.data  # 获取 JSON 数据
     json_obj = json.loads(str(data_byte, encoding='utf8'))
+    print(json_obj)
     result = delete_instance(json_obj)
     response = make_response()
     response.data = json.dumps(result)
