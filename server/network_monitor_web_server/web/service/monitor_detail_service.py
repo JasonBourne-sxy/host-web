@@ -10,7 +10,7 @@
                    2019/9/24:
 -------------------------------------------------
 """
-from db_utility.sql_str import QUERY_MONITOR_DETAIL_HALF_CONNECTION, QUERY_MONITOR_DETAIL_PING
+from db_utility.db_str.sql_str import QUERY_MONITOR_DETAIL_HALF_CONNECTION, QUERY_MONITOR_DETAIL_PING
 from db_utility.db_pool import DB_POOL
 __author__ = 'li'
 

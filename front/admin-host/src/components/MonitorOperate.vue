@@ -67,7 +67,7 @@
             width="150">
             <template slot-scope="scope">
               <el-button
-                @click.native.prevent="edcheckOptionsitorRow(scope.$index, scope.row)"
+                @click.native.prevent="editorRow(scope.$index, scope.row)"
                 type="text"
                 icon="el-icon-edit"
                 size="small">
@@ -131,7 +131,6 @@
 
 <script>
     import spuApi from '../api/spu.api'
-
     export default {
         data() {
             return {
