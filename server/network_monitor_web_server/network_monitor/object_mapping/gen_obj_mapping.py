@@ -12,7 +12,7 @@
 """
 from common.utility.file_path_utility import combine_file_path
 from db_utility.db_pool import DB_POOL
-from db_utility.sql_str import GET_COLUMN_INFO
+from db_utility.db_str.sql_str import GET_COLUMN_INFO
 
 __author__ = 'li'
 

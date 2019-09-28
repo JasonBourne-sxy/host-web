@@ -12,7 +12,7 @@
 """
 
 from db_utility.db_pool import DB_POOL
-from db_utility.sql_str import SELECT_INSTANCE_FROM_SYS_ID, SELECT_VISUAL_FROM_CHECK_TYPE
+from db_utility.db_str.sql_str import SELECT_INSTANCE_FROM_SYS_ID, SELECT_VISUAL_FROM_CHECK_TYPE
 
 __author__ = 'li'
 

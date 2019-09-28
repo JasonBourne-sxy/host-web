@@ -16,7 +16,7 @@ from common.utility.uuid_utility import get_uuid_str
 from db_utility.check_result_handle import datestamp_to_datetime
 
 from db_utility.db_pool import DB_POOL
-from db_utility.sql_str import INSERT_LOG
+from db_utility.db_str.sql_str import INSERT_LOG
 
 __author__ = 'li'
 

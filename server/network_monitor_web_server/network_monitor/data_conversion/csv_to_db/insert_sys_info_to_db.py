@@ -14,7 +14,7 @@ __author__ = 'li'
 from common.utility.file_path_utility import combine_file_path
 from common.utility.uuid_utility import get_uuid_str
 from db_utility.db_pool import DB_POOL
-from db_utility.sql_str import INSERT_SYS_INFO
+from db_utility.db_str.sql_str import INSERT_SYS_INFO
 
 import csv
 

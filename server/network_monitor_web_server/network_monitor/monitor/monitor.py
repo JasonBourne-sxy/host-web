@@ -17,7 +17,7 @@ from common.log_util.log_utility import save_log_to_db
 __author__ = 'li'
 from db_utility.check_result_handle import save_check_info_to_detail, update_monitor_visualization_db
 from db_utility.db_pool import DB_POOL
-from db_utility.sql_str import SELECT_USED_MONITOR_INSTANCE, PING_DEFAULT_INTERVAL
+from db_utility.db_str.sql_str import SELECT_USED_MONITOR_INSTANCE, PING_DEFAULT_INTERVAL
 from network_monitor.monitor.slaver_half_connection import HalfConnectionCheck, threading
 from network_monitor.monitor.slaver_ping import PingCheck
 

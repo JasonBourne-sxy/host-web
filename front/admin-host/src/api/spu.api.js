@@ -25,7 +25,9 @@ class SpuApi {
   static query_sys_info(data) {
     return axios.post('/query_sys_info', data)
   }
-
+  static insert_or_update_system_info(data) {
+    return axios.post('/insert_or_update_system_info', data)
+  }
 }
 
 export default SpuApi

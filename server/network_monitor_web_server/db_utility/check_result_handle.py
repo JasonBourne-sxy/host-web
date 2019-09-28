@@ -16,7 +16,7 @@ import pymysql
 
 from common.utility.uuid_utility import get_uuid_str
 from db_utility.db_pool import DB_POOL
-from db_utility.sql_str import INSERT_PING_TO_MONITOR_DETAIL, \
+from db_utility.db_str.sql_str import INSERT_PING_TO_MONITOR_DETAIL, \
     SELECT_MONITOR_VISUAL_BY_UNIQUE_IDENTIFY, \
     INSERT_INTO_MONITOR_VISUAL, UPDATE_MONITOR_VISUAL
 from network_monitor.object_mapping.monitor_visualization import MONITOR_VISUALIZATION
@@ -72,6 +72,8 @@ def get_insert_or_update_visual(visual):
     count = DB_POOL.get_count(sql)
     if visual.port is None:
         visual.port = 0
+    if visual.check_result == 'half_connection':
+        visual.check_result = '半连接'
     if count == 0:
         sql = INSERT_INTO_MONITOR_VISUAL % \
               (get_uuid_str(), visual.unique_identify, visual.ip, visual.port,

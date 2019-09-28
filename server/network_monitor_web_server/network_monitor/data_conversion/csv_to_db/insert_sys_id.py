@@ -11,7 +11,7 @@
 -------------------------------------------------
 """
 from db_utility.db_pool import DB_POOL
-from db_utility.sql_str import SELECT_MONITOR_INSTANCE, SELECT_SYSTEM_INFO, UPDATE_SYSTEM_ID
+from db_utility.db_str.sql_str import SELECT_MONITOR_INSTANCE, SELECT_SYSTEM_INFO, UPDATE_SYSTEM_ID
 
 __author__ = 'li'
 
