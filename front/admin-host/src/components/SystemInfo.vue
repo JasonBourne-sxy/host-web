@@ -132,7 +132,7 @@
             }
         },
         created() {
-            this.getTreeInfo();
+            // this.getTreeInfo();
             this.getSysInfoData();
         },
         methods: {
@@ -174,12 +174,11 @@
                 console.log(`当前页: ${val}`);
             },
             add() {
-                this.form.ip = '';
-                this.form.port = '';
-                this.form.type = '';
-                this.form.timeNum = '';
-                this.form.sysInfo = '';
-                this.form.describe = '';
+                this.form.id = "";
+                this.form.name = "";
+                this.form.manager = "";
+                this.form.telephone = "";
+                this.form.job_number = "";
                 this.dialogFormVisible = true;
             },
             search() {
@@ -202,8 +201,9 @@
                     delivery: this.form.delivery,
                     describe: this.form.describe,
                 };
-                spuApi.insert_or_update_system_info(params).then(
-                );
+                spuApi.insert_or_update_system_info(params).then(res=>{
+                    this.search();
+                });
             },
             getSysInfoData() {
                 spuApi.query_sys_info({id: ""}).then(res => {

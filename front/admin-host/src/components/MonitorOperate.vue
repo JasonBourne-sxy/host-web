@@ -234,6 +234,7 @@
                 console.log(`当前页: ${val}`);
             },
             add() {
+                this.form.id = '';
                 this.form.ip = '';
                 this.form.port = '';
                 this.form.type = '';
