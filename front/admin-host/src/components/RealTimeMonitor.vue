@@ -7,7 +7,7 @@
         <label>IP：</label>
         <el-input placeholder="" v-model="ip" style="width: 150px"></el-input>
         <label>检测类型：</label>
-        <el-select v-model="checkType" placeholder="请选择">
+        <el-select v-model="checkType" style="width: 120px" placeholder="请选择">
           <el-option
             v-for="item in checkOptions"
             :key="item.value"
@@ -15,9 +15,13 @@
             :value="item.value">
           </el-option>
         </el-select>
+        <label>检测结果：</label>
+        <el-select v-model="check_result" style="width: 120px" placeholder="请选择类型">
+          <el-option label="正常" value="True"></el-option>
+          <el-option label="异常" value="False"></el-option>
+        </el-select>
         <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
         <el-button type="primary" icon="el-icon-refresh" @click="refresh">重置</el-button>
-        <el-button type="primary" icon="el-icon-search" @click="add">新增</el-button>
       </el-header>
       <el-main>
         <el-table
@@ -43,44 +47,33 @@
           </el-table-column>
           <el-table-column
             prop="port"
-            label="PORT"
-            min-width="10%">
+            label="端口号"
+            min-width="8%">
           </el-table-column>
           <el-table-column
             prop="type"
             label="监控类型"
-            min-width="10%">
+            min-width="8%">
+          </el-table-column>
+          <el-table-column
+            prop="check_result"
+            label="检测结果"
+            min-width="8%">
+          </el-table-column>
+          <el-table-column
+            prop="response_time"
+            label="响应时间(ms)"
+            min-width="8%">
           </el-table-column>
           <el-table-column
             prop="interval"
             label="检测间隔(s)"
-            min-width="10%">
+            min-width="8%">
           </el-table-column>
           <el-table-column
-            prop="is_use"
-            label="是否启用"
-            min-width="10%">
-          </el-table-column>
-          <el-table-column
-            fixed="right"
-            label="操作"
-            width="150">
-            <template slot-scope="scope">
-              <el-button
-                @click.native.prevent="editorRow(scope.$index, scope.row)"
-                type="text"
-                icon="el-icon-edit"
-                size="small">
-                编辑
-              </el-button>
-              <el-button
-                @click.native.prevent="deleteRow(scope.$index,tableData, scope.row)"
-                type="text"
-                icon="el-icon-delete"
-                size="small">
-                移除
-              </el-button>
-            </template>
+            prop="start_time"
+            label="检查时间"
+            min-width="8%">
           </el-table-column>
         </el-table>
         <template>
@@ -124,10 +117,6 @@
 
 
             </el-form>
-            <div slot="footer" class="dialog-footer">
-              <el-button @click="dialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="handleSubmit">确 定</el-button>
-            </div>
           </el-dialog>
         </template>
       </el-main>
@@ -176,13 +165,11 @@
                     value: '自定义',
                     label: '自定义'
                 }],
+                check_result: '',
                 sys_idOptions: [],
                 sys_id: '',
                 is_use: ''
             }
-        },
-        created() {
-            this.getsys_idData();
         },
         methods: {
             getTableList(sysId, check_type) {
@@ -190,87 +177,15 @@
                     this.tableData = res.data;
                 })
             },
-            deleteRow(index, rows, row) {
-                this.$confirm('是否确认删除?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
-                    type: 'warning'
-                }).then(() => {
-                    let params = {id: row.id};
-                    spuApi.deleteInstance(params).then(res => {
-                        rows.splice(index, 1);
-                        this.$message({
-                            type: 'success',
-                            message: '删除成功!'
-                        });
-                    })
-
-                }).catch(() => {
-                    this.$message({
-                        type: 'info',
-                        message: '已取消删除'
-                    });
-                });
-            },
-            editorRow(index, row) {
-                let data = row;
-                this.form.id = data.id;
-                this.form.ip = data.ip;
-                this.form.port = data.port;
-                this.form.type = data.type;
-                this.form.interval = data.interval;
-                this.form.sys_id = data.sys_id;
-                this.form.is_use = data.is_use;
-                this.form.description = data.description;
-                this.dialogFormVisible = true;
-                console.log(this.form);
-            },
-            handleSizeChange(val) {
-                console.log(`每页 ${val} 条`);
-            },
-            handleCurrentChange(val) {
-                console.log(`当前页: ${val}`);
-            },
-            add() {
-                this.form.id = '';
-                this.form.ip = '';
-                this.form.port = '';
-                this.form.type = '';
-                this.form.is_use = '';
-                this.form.interval = '';
-                this.form.sys_id = '';
-                this.form.description = '';
-                this.dialogFormVisible = true;
-            },
             search() {
                 this.loading = true;
-                let params = {ip: this.ip, sys_name: this.sysName, check_type: this.checkType};
-                spuApi.getMonitorOperateDetails(params).then(res => {
+                let params = {
+                    ip: this.ip, sys_name: this.sysName, check_type: this.checkType
+                    , check_result: this.check_result
+                };
+                spuApi.get_real_time_monitor_result(params).then(res => {
                     this.tableData = res.data;
                     this.loading = false;
-                })
-            },
-            handleSubmit() {
-                this.dialogFormVisible = false;
-                let params = {
-                    id: this.form.id,
-                    ip: this.form.ip,
-                    port: this.form.port,
-                    type: this.form.type,
-                    sys_id: this.form.sys_id,
-                    is_use:this.form.is_use,
-                    interval: this.form.interval,
-                    delivery: this.form.delivery,
-                    description: this.form.description,
-                };
-                spuApi.insertOrUpdateInstance(params).then(res => {
-                    this.search();
-                })
-            },
-            getsys_idData() {
-                spuApi.query_sys_info({id: ""}).then(res => {
-                    console.log(res);
-                    this.sys_idOptions = res.data
                 })
             },
             refresh() {
@@ -278,6 +193,7 @@
                 this.ip = '';
                 this.dateValue = [new Date(), new Date()];
                 this.checkType = '';
+                this.check_result = '';
             }
         }
     };

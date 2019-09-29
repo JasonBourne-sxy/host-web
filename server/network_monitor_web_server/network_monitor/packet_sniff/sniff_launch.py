@@ -50,7 +50,12 @@ def handle_TCP(package):
     receive_time = package.time
     key = SAVE_SNIFF_RESULT + '_' + check_type + '_' + src_ip + '_' + str(src_port)
     value = get_from_redis(key)
-    if abs(receive_time - value['receive_time']) < 10:
+    if value is None:
+        value = {'src_ip': src_ip, 'src_port': src_port, 'check_type': check_type,
+                 'receive_time': receive_time}
+        value_str = json.dumps(value)
+        insert_to_redis(key, value_str)
+    elif abs(receive_time - value['receive_time']) < 10:
         return
     value = {'src_ip': src_ip, 'src_port': src_port, 'check_type': check_type,
              'receive_time': receive_time}
@@ -70,7 +75,8 @@ def handle_package(package):
         elif 'TCP' in package:
             handle_TCP(package)
     except Exception as e:
-        save_log_to_db(level='error', name='sniff error', description=str(e))
+        save_log_to_db(level='error', name='sniff error',
+                       description=str(e).replace('\'', '"'))
         print(e)
     pass
 

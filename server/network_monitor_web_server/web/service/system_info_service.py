@@ -104,12 +104,22 @@ class SystemInfoService:
         :param json_obj:
         :return:
         """
-        if 'id' in json_obj:
+        if 'id' in json_obj and (len(json_obj['id']) > 10):
             SystemInfoService.__update_system_info(json_obj)
-
         else:
             SystemInfoService.__insert_system_info(json_obj)
         return {'is_success': True}
+
+    @staticmethod
+    def get_system_name_by_id(sys_id):
+        """
+        get system name by id
+        :param sys_id:
+        :return:
+        """
+        sql = SELECT_BASE_SYSTEM_INFO + """ and id ='%s'""" % sys_id
+        sys_name = DB_POOL.select(sql)[0]['name']
+        return sys_name
 
 
 if __name__ == '__main__':

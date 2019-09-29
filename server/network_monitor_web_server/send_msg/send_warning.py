@@ -37,7 +37,6 @@ def send_msg_to_qyweixin(touser_list, title, content):
         header_dict = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Trident/7.0; rv:11.0) like Gecko',
                        "Content-Type": "application/json"}
         res = requests.post(url, data=textmod, headers=header_dict)
-        print(res)
         # parse json object
         res_dict = json.loads(res)
         return_code = res_dict["code"]
@@ -52,7 +51,6 @@ if __name__ == '__main__':
     touser_list = '01639'
     title = 'title test'
     content ="""t: 用于设定超时时间， 单位为秒，当发起一个get请求时可以设置一个timeout时间， 如果在timeout时间内请求内容没有返回， 将产生一个timeout的异常。t: 用于设定超时时间， 单位为秒，当发起一个get请求时可以设置一个timeout时间， 如果在timeout时间内请求内容没有返回， 将产生一个timeout的异常。t: 用于设定超时时间， 单位为秒，当发起一个get请求时可以设置一个timeout时间， 如果在timeout时"""
-    print(len(content))
     # 弥补库
     title = title.replace("Problem:", "[告警]")
     title = title.replace("Resolved:", "[告警消除]")

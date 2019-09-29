@@ -11,12 +11,17 @@
 -------------------------------------------------
 """
 import copy
+import json
+import time
 
 from common.log_util.log_utility import save_log_to_db
+from network_monitor.warning_util.save_warning import save_warning_to_db
+from redis_utility.get_all import delete_all_data_from_redis
+from redis_utility.redis_operate import insert_to_redis, get_fuzzy_search_keys, get_from_redis
 
 __author__ = 'li'
 from db_utility.check_result_handle import save_check_info_to_detail, update_monitor_visualization_db
-from db_utility.db_pool import DB_POOL
+from db_utility.db_pool import DB_POOL, CHECK_INSTANCES_REDIS_FLAG
 from db_utility.db_str.sql_str import SELECT_USED_MONITOR_INSTANCE, PING_DEFAULT_INTERVAL
 from network_monitor.monitor.slaver_half_connection import HalfConnectionCheck, threading
 from network_monitor.monitor.slaver_ping import PingCheck
@@ -31,12 +36,14 @@ class Monitor(object):
         """
         init
         """
+        delete_all_data_from_redis()
         self.timing_items = None
         self.ping_instances, self.half_connection_instances = \
             self.__get_monitor_instances()
         self.ping_instances, self.half_connection_instances = \
             self.__filter_instances()
-        self.timing_task_items = self.__load_timing_task_items()
+        self.save_check_instances_to_redis()
+        # self.timing_task_items = self.__load_timing_task_items()
 
     @staticmethod
     def __get_monitor_instances():
@@ -54,6 +61,20 @@ class Monitor(object):
                 ping_instances.append(instance)
         return ping_instances, half_connection_instances
 
+    @staticmethod
+    def get_all_interval():
+        """
+        get all intervals
+        :return:
+        """
+        re = 'CHECK_INSTANCE_*'
+        keys = get_fuzzy_search_keys(re)
+        intervals = []
+        for key in keys:
+            interval = int(str(key).split('_')[2])
+            intervals.append(interval)
+        return intervals
+
     def __filter_instances(self):
         """
         filter instances
@@ -65,16 +86,16 @@ class Monitor(object):
             ip = item['ip']
             if check_type == 'ping':
                 interval = item['interval']
-                content = str(ip) + '_' + str(interval)
+                content = str(interval) + '_' + str(ip)
             else:
-                content = str(ip) + '_' + str(PING_DEFAULT_INTERVAL)
+                content = str(PING_DEFAULT_INTERVAL) + '_' + str(ip)
             ping_items.add(content)
         half_connection_items = set()
         for item in self.half_connection_instances:
             ip = item['ip']
             port = item['port']
             interval = item['interval']
-            content = str(ip) + '_' + str(port) + '_' + str(interval)
+            content = str(interval) + '_' + str(ip) + '_' + str(port)
             half_connection_items.add(content)
         return ping_items, half_connection_items
 
@@ -92,6 +113,7 @@ class Monitor(object):
         result = ping_check.get_ping_result()
         save_check_info_to_detail(result)
         update_monitor_visualization_db(result)
+        save_warning_to_db(result)
 
     @staticmethod
     def check_half_connection(check_items):
@@ -107,6 +129,7 @@ class Monitor(object):
         result = connection_check.get_half_connection_result()
         save_check_info_to_detail(result)
         update_monitor_visualization_db(result)
+        save_warning_to_db(result)
 
     def __load_timing_task_items(self):
         """
@@ -163,11 +186,99 @@ class Monitor(object):
         """
         :return:
         """
-        intervals = self.timing_task_items.keys()
-        for interval in intervals:
-            timer = threading.Timer(0, self.check,
-                                    args=(interval,))
-            timer.start()
+        current_second = 0
+        while True:
+            threading.Thread(target=self.start_check, args=(current_second,)).start()
+            time.sleep(1)
+            current_second = current_second + 1
+
+    def save_check_instances_to_redis(self):
+        """
+        save to redis format  "KEY:CHECK_INSTANCE_INTERVAL_TYPE VALUE:[IP_PORT]"
+        :return:h
+        """
+        all_mapping = {}
+        for ping_instance in self.ping_instances:
+            interval, ip = ping_instance.split('_')
+            key = CHECK_INSTANCES_REDIS_FLAG + '_' + str(interval) + "_" + 'PING'
+            if key not in all_mapping:
+                all_mapping[key] = []
+            all_mapping[key].append(ip)
+        for instance in self.half_connection_instances:
+            interval, ip, port = instance.split('_')
+            key = CHECK_INSTANCES_REDIS_FLAG + '_' + \
+                  str(interval) + "_" + 'HALF_CONNECTION'
+            if key not in all_mapping:
+                all_mapping[key] = []
+            value = ip + '_' + str(port)
+            all_mapping[key].append(value)
+        self.__save_mapping_to_redis(all_mapping)
+
+    @staticmethod
+    def __save_mapping_to_redis(all_mapping):
+        """
+        save mapping to redis
+        :param all_mapping:
+        :return:
+        """
+        for key in all_mapping:
+            value = all_mapping[key]
+            value_str = json.dumps(value)
+            insert_to_redis(key, value_str)
+
+    def start_check(self, current_second):
+        """
+        check
+        :param current_second:
+        :return:
+        """
+
+        intervals = Monitor.get_all_interval()
+        check_intervals = Monitor.get_check_interval(intervals, current_second)
+        if len(check_intervals) > 0:
+            print(current_second)
+            Monitor.__check_instances(self, check_intervals)
+
+    @staticmethod
+    def get_check_interval(intervals, current_second):
+        """
+        get check interval
+        :param intervals:
+        :param current_second:
+        :return:
+        """
+        check_intervals = set()
+        for inter in intervals:
+            if current_second % inter == 0:
+                check_intervals.add(inter)
+        return check_intervals
+
+    def __check_instances(self, check_intervals):
+        """
+        CHECK_INSTANCE_INTERVAL_TYPE VALUE:[IP_PORT]
+        get to check instances
+        :param check_intervals:
+        :return:
+        """
+        for check_interval in check_intervals:
+            ping_key = """CHECK_INSTANCE_%s_PING""" % str(check_interval)
+            half_key = """CHECK_INSTANCE_%s_HALF_CONNECTION""" % \
+                       str(check_interval)
+            ping_array = get_from_redis(ping_key)
+            if ping_array is not None:
+                ping_instances = []
+                for ping in ping_array:
+                    ping_instances.append({'ip': ping})
+                self.check_ping(ping_instances)
+            half_array = get_from_redis(half_key)
+            if half_array is not None:
+                half_instances = []
+                for half in half_array:
+                    ip, port = half.split('_')
+                    half_instances.append({'ip': ip,
+                                           'port': port,
+                                           'interval': int(check_interval)})
+                self.check_half_connection(half_instances)
 
 
 def main():

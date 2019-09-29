@@ -56,7 +56,6 @@ class PingCheck(object):
             ip = instance['ip']
             check_result = EXECUTOR_POOL.apply_async(ping_once, [ip])
             results.append(check_result)
-
         try:
             EXECUTOR_POOL.join()
         except Exception:

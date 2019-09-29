@@ -21,6 +21,7 @@ CORS(app, supports_credentials=True)
 from web.interface.monitor_detail_interface import *
 from web.interface.monitor_instances_interface import *
 from web.interface.system_info_interface import *
+from web.interface.monitor_visualization_interface import *
 
 
 def launch_web():

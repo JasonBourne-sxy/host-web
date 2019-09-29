@@ -72,8 +72,8 @@ def get_insert_or_update_visual(visual):
     count = DB_POOL.get_count(sql)
     if visual.port is None:
         visual.port = 0
-    if visual.check_result == 'half_connection':
-        visual.check_result = '半连接'
+    if visual.check_type == 'half_connection':
+        visual.check_type = '半连接'
     if count == 0:
         sql = INSERT_INTO_MONITOR_VISUAL % \
               (get_uuid_str(), visual.unique_identify, visual.ip, visual.port,

@@ -71,6 +71,7 @@ class MySQL_Util_Pool:
             conn.commit()
             return {'result': True, 'id': int(cursor.lastrowid)}
         except Exception as err:
+            print(sql)
             conn.rollback()
             return {'result': False, 'err': err}
         finally:

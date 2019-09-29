@@ -14,6 +14,9 @@ class SpuApi {
     return axios.post('/get_monitor_instance', data)
   }
 
+  static get_real_time_monitor_result(data) {
+    return axios.post('/get_real_time_monitor_result', data)
+  }
   static insertOrUpdateInstance(data) {
     return axios.post('/insert_or_update_instance', data)
   }
@@ -24,6 +27,9 @@ class SpuApi {
 
   static query_sys_info(data) {
     return axios.post('/query_sys_info', data)
+  }
+  static delete_sys_info(data) {
+    return axios.post('/delete_sys_info', data)
   }
   static insert_or_update_system_info(data) {
     return axios.post('/insert_or_update_system_info', data)

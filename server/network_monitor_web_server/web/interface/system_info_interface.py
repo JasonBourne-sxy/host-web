@@ -55,3 +55,16 @@ def insert_or_update_system_info():
     json_obj = json.loads(str(data_byte, encoding='utf8'))
     result = SystemInfoService.insert_or_update_system_info(json_obj)
     return create_json_response(result)
+
+
+@app.route('/delete_sys_info', methods=['POST'])
+@cross_origin()
+def delete_sys_info():
+    """
+    ocr interface for python
+    :return:
+    """
+    data_byte = request.data  # 获取 JSON 数据
+    json_obj = json.loads(str(data_byte, encoding='utf8'))
+    result = SystemInfoService.delete_system_info(json_obj)
+    return create_json_response(result)

@@ -43,8 +43,9 @@ def __launch_monitor():
 def launch():
     __launch_sniff()
     time.sleep(2)
+    threading.Thread(target=launch_web).start()
     __launch_monitor()
-    launch_web()
+
 
 
 if __name__ == '__main__':

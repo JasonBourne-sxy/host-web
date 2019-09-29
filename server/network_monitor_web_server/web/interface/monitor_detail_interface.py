@@ -10,7 +10,7 @@
                    2019/9/27:
 -------------------------------------------------
 """
-from web.service.monitor_visualization_service import get_monitor_visualization
+from web.service.monitor_visualization_service import MonitorVisualizationService
 
 __author__ = 'li'
 
@@ -33,5 +33,6 @@ def receive_image_interface():
     sys_id, check_type, check_result = json_obj.get('sys_id'), \
                                        json_obj.get('check_type'), \
                                        json_obj.get('check_result')
-    return_detail = get_monitor_visualization(sys_id, check_type, check_result)
+    return_detail = MonitorVisualizationService. \
+        get_monitor_visualization(sys_id, check_type)
     return create_json_response(return_detail)

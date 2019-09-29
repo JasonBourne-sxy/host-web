@@ -132,7 +132,6 @@
             }
         },
         created() {
-            // this.getTreeInfo();
             this.getSysInfoData();
         },
         methods: {
@@ -143,7 +142,7 @@
                     type: 'warning'
                 }).then(() => {
                     let params = {id: row.id};
-                    spuApi.deleteInstance(params).then(res => {
+                    spuApi.delete_sys_info(params).then(res => {
                         rows.splice(index, 1);
                         this.$message({
                             type: 'success',
