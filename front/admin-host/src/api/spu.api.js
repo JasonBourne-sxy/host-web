@@ -9,7 +9,9 @@ class SpuApi {
     return axios.post('/get_detail',
       {sys_id: sysId, check_type: check_type})
   }
-
+  static get_warning_history(data) {
+    return axios.post('/get_warning_history', data)
+  }
   static getMonitorOperateDetails(data) {
     return axios.post('/get_monitor_instance', data)
   }

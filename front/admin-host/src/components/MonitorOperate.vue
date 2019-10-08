@@ -258,7 +258,7 @@
                     port: this.form.port,
                     type: this.form.type,
                     sys_id: this.form.sys_id,
-                    is_use:this.form.is_use,
+                    is_use: this.form.is_use,
                     interval: this.form.interval,
                     delivery: this.form.delivery,
                     description: this.form.description,
