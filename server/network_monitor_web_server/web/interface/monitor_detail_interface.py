@@ -10,7 +10,7 @@
                    2019/9/27:
 -------------------------------------------------
 """
-from web.service.monitor_visualization_service import MonitorVisualizationService
+from db.mysql_relevant.service.monitor_visualization_service import MonitorVisualizationService
 
 __author__ = 'li'
 
@@ -18,7 +18,7 @@ import json
 
 from web.interface.interface_common import create_json_response
 
-from web.app import app, cross_origin, request
+from web.web_launch import app, cross_origin, request
 
 
 @app.route('/get_detail', methods=['POST'])

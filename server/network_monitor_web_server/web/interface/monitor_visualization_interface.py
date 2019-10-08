@@ -10,13 +10,13 @@
                    2019/9/28:
 -------------------------------------------------
 """
+from db.mysql_relevant.service.monitor_visualization_service import MonitorVisualizationService
 
 __author__ = 'li'
-from web.service.monitor_visualization_service import MonitorVisualizationService
 
 import json
 from web.interface.interface_common import create_json_response
-from web.app import app, cross_origin, request
+from web.web_launch import app, cross_origin, request
 
 
 @app.route('/get_real_time_monitor_result', methods=['POST'])
@@ -28,5 +28,5 @@ def get_real_time_monitor_result():
     """
     data_byte = request.data  # 获取 JSON 数据
     json_obj = json.loads(str(data_byte, encoding='utf8'))
-    results = MonitorVisualizationService.query_realtime_monitor_result(json_obj)
+    results = MonitorVisualizationService.query_realtime_monitor(json_obj)
     return create_json_response(results)

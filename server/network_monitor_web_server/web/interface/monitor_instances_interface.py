@@ -10,9 +10,9 @@
                    2019/9/27:
 -------------------------------------------------
 """
-from web.service.monitor_instance_service import MonitorInstancesService
-
-from web.service.monitor_detail_service import get_monitor_history_data
+from check_network.monitor.monitor import MASTER_MONITOR
+from db.mysql_relevant.service.monitor_detail_service import MonitorDetailService
+from db.mysql_relevant.service.monitor_instance_service import MonitorInstancesService
 
 __author__ = 'li'
 
@@ -20,7 +20,7 @@ import json
 
 from web.interface.interface_common import create_json_response
 
-from web.app import app, cross_origin, request
+from web.web_launch import app, cross_origin, request
 
 
 @app.route('/get_monitor_history_data', methods=['POST'])
@@ -32,7 +32,7 @@ def get_monitor_history():
     """
     data_byte = request.data  # 获取 JSON 数据
     json_obj = json.loads(str(data_byte, encoding='utf8'))
-    result = get_monitor_history_data(json_obj)
+    result = MonitorDetailService.get_monitor_history_data(json_obj)
     return create_json_response(result)
 
 
@@ -46,6 +46,7 @@ def insert_or_update_instance():
     data_byte = request.data  # 获取 JSON 数据
     json_obj = json.loads(str(data_byte, encoding='utf8'))
     result = MonitorInstancesService.insert_or_update_monitor_instance(json_obj)
+    MASTER_MONITOR.reload_redis_instances()
     return create_json_response(result)
 
 
@@ -59,6 +60,7 @@ def delete_instance():
     data_byte = request.data  # 获取 JSON 数据
     json_obj = json.loads(str(data_byte, encoding='utf8'))
     result = MonitorInstancesService.delete_instance(json_obj)
+    MASTER_MONITOR.reload_redis_instances()
     return create_json_response(result)
 
 

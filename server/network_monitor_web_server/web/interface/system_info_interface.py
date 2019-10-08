@@ -10,14 +10,13 @@
                    2019/9/27:
 -------------------------------------------------
 """
-from web.service.system_info_service import SystemInfoService
 
-__author__ = 'li'
 import json
 
+from db.mysql_relevant.service.system_info_service import SystemInfoService
 from web.interface.interface_common import create_json_response
 
-from web.app import app, cross_origin, request
+from web.web_launch import app, cross_origin, request
 
 
 @app.route('/get_tree_info', methods=['GET', 'POST'])

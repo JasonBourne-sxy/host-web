@@ -29,6 +29,15 @@ class TypeChange(object):
         return ''
 
     @staticmethod
+    def datetime_to_date_stamp(date_time):
+        """
+        :param date_time:
+        :return:
+        """
+        time_array = time.strptime(date_time, "%Y-%m-%d %H:%M:%S")
+        return int(time.mktime(time_array))
+
+    @staticmethod
     def date_stamp_to_datetime(date_stamp):
         """
 
