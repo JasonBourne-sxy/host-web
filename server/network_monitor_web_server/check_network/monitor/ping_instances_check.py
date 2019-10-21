@@ -15,7 +15,7 @@ from scapy.all import *
 from random import randint
 
 from check_network.monitor.check_condition import CheckCondition
-from common.threading_util.executor_pool import EXECUTOR_POOL
+from common.log_util.log_utility import save_log_to_db
 from config import SAVE_SNIFF_RESULT
 from db.redis_relevant.connection_pool.redis_operate import get_from_redis
 
@@ -33,7 +33,6 @@ class PingCheck(object):
         :param ping_instances:
         """
         self.ping_instances = ping_instances
-        self.process_pool = EXECUTOR_POOL
         self.send_packet = []
         self.sleep_time = 3
 
@@ -43,7 +42,8 @@ class PingCheck(object):
         :return:
         """
         self.__send_ping()
-        time.sleep(self.sleep_time)
+        if len(self.ping_instances) > 0:
+            time.sleep(self.sleep_time)
         return self.__get_ping_result()
 
     def __send_ping(self):
@@ -51,16 +51,16 @@ class PingCheck(object):
         get ping result
         :return:
         """
-        results = []
+        start_time = time.time()
         check_condition = []
         for instance in self.ping_instances:
             ip = instance['ip']
-            check_result = EXECUTOR_POOL.apply_async(ping_once, [ip, check_condition])
-            results.append(check_result)
-        try:
-            EXECUTOR_POOL.join()
-        except Exception:
-            pass
+            ping_once(ip, check_condition)
+        during = time.time() - start_time
+        send_size = len(self.ping_instances)
+        save_log_to_db(level='info', name='check',
+                       description='发送ping 完成，发送数：'
+                                   + str(send_size) + ', 耗时：' + str(during) + 's')
         self.send_packet = check_condition
 
     def __get_ping_result(self):
@@ -89,6 +89,7 @@ class PingCheck(object):
 def ping_once(host, check_condition):
     """
     ping method
+    :param check_condition:
     :param host:
     :return:
     """
@@ -98,16 +99,3 @@ def ping_once(host, check_condition):
     start_time = ping_packet.sent_time
     check_result = CheckCondition('ping', ip=host, port=None, start_time=start_time)
     check_condition.append(check_result)
-    return check_result
-
-
-def main():
-    a = ['14.215.177.38']
-    resu = EXECUTOR_POOL.apply_async(ping_once, a)
-    time.sleep(3)
-
-
-if __name__ == '__main__':
-    main()
-
-    pass

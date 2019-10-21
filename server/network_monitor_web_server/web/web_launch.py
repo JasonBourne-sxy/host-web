@@ -24,6 +24,7 @@ from web.interface.system_info_interface import *
 from web.interface.monitor_visualization_interface import *
 from web.interface.warning_history_interface import *
 
+
 def launch_web():
     """
     launch web

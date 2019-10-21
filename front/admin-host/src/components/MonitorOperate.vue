@@ -4,6 +4,8 @@
       <el-header style="text-align: left; font-size: 12px">
         <label>系统名称：</label>
         <el-input placeholder="" v-model="sysName" style="width: 150px"></el-input>
+        <label>描述：</label>
+        <el-input placeholder="" v-model="description" style="width: 150px"></el-input>
         <label>IP：</label>
         <el-input placeholder="" v-model="ip" style="width: 150px"></el-input>
         <label>检测类型：</label>
@@ -34,7 +36,7 @@
           <el-table-column
             prop="description"
             label="监控描述"
-            min-width="10%">
+            min-width="20%">
           </el-table-column>
           <el-table-column
             prop="ip"
@@ -44,22 +46,22 @@
           <el-table-column
             prop="port"
             label="PORT"
-            min-width="10%">
+            min-width="6%">
           </el-table-column>
           <el-table-column
             prop="type"
             label="监控类型"
-            min-width="10%">
+            min-width="6%">
           </el-table-column>
           <el-table-column
             prop="interval"
             label="检测间隔(s)"
-            min-width="10%">
+            min-width="6%">
           </el-table-column>
           <el-table-column
             prop="is_use"
             label="是否启用"
-            min-width="10%">
+            min-width="6%">
           </el-table-column>
           <el-table-column
             fixed="right"
@@ -178,11 +180,12 @@
                 }],
                 sys_idOptions: [],
                 sys_id: '',
-                is_use: ''
+                is_use: '',
+                description: ''
             }
         },
         created() {
-            this.getsys_idData();
+            this.get_sys_id_data();
         },
         methods: {
             getTableList(sysId, check_type) {
@@ -197,7 +200,7 @@
                     type: 'warning'
                 }).then(() => {
                     let params = {id: row.id};
-                    spuApi.deleteInstance(params).then(res => {
+                    spuApi.deleteInstance(params).then(_ => {
                         rows.splice(index, 1);
                         this.$message({
                             type: 'success',
@@ -244,7 +247,10 @@
             },
             search() {
                 this.loading = true;
-                let params = {ip: this.ip, sys_name: this.sysName, check_type: this.checkType};
+                let params = {
+                    ip: this.ip, sys_name: this.sysName, check_type: this.checkType
+                    , description: this.description
+                };
                 spuApi.getMonitorOperateDetails(params).then(res => {
                     this.tableData = res.data;
                     this.loading = false;
@@ -267,7 +273,7 @@
                     this.search();
                 })
             },
-            getsys_idData() {
+            get_sys_id_data() {
                 spuApi.query_sys_info({id: ""}).then(res => {
                     console.log(res);
                     this.sys_idOptions = res.data

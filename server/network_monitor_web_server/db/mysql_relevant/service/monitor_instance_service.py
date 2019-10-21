@@ -31,9 +31,11 @@ class MonitorInstancesService:
 
     @staticmethod
     def query_instance_by_condition(sys_id=None, sys_name=None,
-                                    ip=None, check_type=None):
+                                    ip=None, check_type=None,
+                                    description=None):
         """
         query instance by condition
+        :param description:
         :param sys_id:
         :param sys_name:
         :param ip:
@@ -49,6 +51,8 @@ class MonitorInstancesService:
             base_sql = base_sql + "and ip like '%" + ip + "%'"
         if check_type is not None and len(check_type) > 0:
             base_sql = base_sql + "and `type` like '%" + check_type + "%'"
+        if description is not None and len(description) > 0:
+            base_sql = base_sql + "and `description` like '%" + description + "%'"
         base_sql = base_sql + 'order by sys_name limit 200;'
         result = DB_POOL.select(sql=base_sql)
         return result
@@ -91,7 +95,6 @@ class MonitorInstancesService:
                                          TypeChange.to_string(json_obj, 'type'),
                                          TypeChange.to_string(json_obj, 'interval'),
                                          TypeChange.to_string(json_obj, 'is_use'))
-        print(sql)
         DB_POOL.execute_sql_str(sql)
 
     @staticmethod

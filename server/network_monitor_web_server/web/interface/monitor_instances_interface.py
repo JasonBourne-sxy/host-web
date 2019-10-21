@@ -73,12 +73,14 @@ def get_monitor_instance():
     """
     data_byte = request.data  # 获取 JSON 数据
     json_obj = json.loads(str(data_byte, encoding='utf8'))
-    sys_id, ip, check_type, sys_name = json_obj.get('sys_id'), \
-                                       json_obj.get('ip'), \
-                                       json_obj.get('check_type'), \
-                                       json_obj.get('sys_name')
+    sys_id, ip, check_type, sys_name, description = json_obj.get('sys_id'), \
+                                                    json_obj.get('ip'), \
+                                                    json_obj.get('check_type'), \
+                                                    json_obj.get('sys_name'), \
+                                                    json_obj.get('description')
     return_detail = MonitorInstancesService. \
         query_instance_by_condition(sys_id=sys_id, ip=ip,
                                     check_type=check_type,
-                                    sys_name=sys_name)
+                                    sys_name=sys_name,
+                                    description=description)
     return create_json_response(return_detail)

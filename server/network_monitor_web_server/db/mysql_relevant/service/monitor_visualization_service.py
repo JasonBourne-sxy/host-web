@@ -118,7 +118,7 @@ class MonitorVisualizationService:
             base_sql = base_sql + " and type like '%" + check_type + "%'"
         if check_result is not None and len(check_result) > 0:
             base_sql = base_sql + " and check_result = '" + check_result + "'"
-        base_sql = base_sql + ' order by t.sys_name ;'
+        base_sql = base_sql + ' order by t.sys_name,t.description ;'
         results = DB_POOL.select(base_sql)
         return MonitorVisualizationService.format_monitor_result(results)
 

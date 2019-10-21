@@ -60,3 +60,8 @@ class TypeChange(object):
         if key in json_obj and json_obj[key] is not None:
             return int(json_obj[key])
         return 0
+
+
+if __name__ == '__main__':
+    a = TypeChange.date_stamp_to_datetime(1571255210)
+    print(a)

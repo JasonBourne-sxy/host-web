@@ -10,6 +10,7 @@
                    2019/10/3:
 -------------------------------------------------
 """
+import threading
 import time
 
 from check_network.monitor.check_instances import CheckInstances
@@ -62,11 +63,12 @@ class Monitor:
         """
         current_second = 0
         while True:
+
             intervals = CheckInstances.get_all_interval()
             check_intervals = CheckInstances.get_check_interval(intervals, current_second)
             if len(check_intervals) > 0:
-                print(current_second)
-                self.check_by_interval(check_intervals)
+                threading.Thread(target=self.check_by_interval, args=(check_intervals,)).start()
+                # self.check_by_interval(check_intervals)
             time.sleep(1)
             current_second = current_second + 1
 

@@ -2,14 +2,7 @@
 <project version="4">
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/config" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/db_utility" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/network_monitor/data_conversion" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/network_monitor/monitor" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/network_monitor/object_mapping" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/network_monitor/packet_sniff" charset="GBK" />
-    <file url="file://$PROJECT_DIR$/network_monitor/packet_sniff/1.csv" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/network_monitor/packet_sniff/1.csv" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/network_monitor/packet_sniff/1.csv" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/redis_utility" charset="GBK" />
+    <file url="file://$PROJECT_DIR$/config/ewq.txt" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/config/ewq.txt" charset="UTF-8" />
   </component>
 </project>

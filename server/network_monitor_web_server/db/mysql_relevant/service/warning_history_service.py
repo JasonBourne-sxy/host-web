@@ -26,6 +26,8 @@ class WarningHistoryService:
         """
         sqls = []
         for item in items:
+            if item.port is None:
+                item.port = 0
             sql = INSERT_WARNING_HISTORY % (
                 get_uuid_str(),
                 item.sys_id,
@@ -108,7 +110,7 @@ class WarningHistoryService:
         if ip is not None and len(ip) > 0:
             base_sql = base_sql + "and ip like '%" + ip + "%'"
         if check_type is not None and len(check_type) > 0:
-            base_sql = base_sql + "and `type` like '%" + check_type + "%'"
+            base_sql = base_sql + "and `check_type` like '%" + check_type + "%'"
         base_sql = base_sql + 'ORDER BY check_time DESC limit 200;'
         print(base_sql)
         result = DB_POOL.select(sql=base_sql)

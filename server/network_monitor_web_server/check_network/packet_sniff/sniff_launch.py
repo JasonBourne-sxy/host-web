@@ -15,7 +15,8 @@ from scapy.all import sniff
 
 from common.log_util.log_utility import save_log_to_db
 from config import LOCAL_IP, SAVE_SNIFF_RESULT
-from db.redis_relevant.connection_pool.redis_operate import insert_to_redis, get_from_redis
+from db.redis_relevant.connection_pool.redis_operate \
+    import insert_to_redis, get_from_redis
 
 
 def handle_ICMP(package):
@@ -83,7 +84,7 @@ def launch_sniff():
     :return:
     """
     filter_condition = 'icmp or (tcp[tcpflags]&(tcp-syn)!=0 and ' \
-                       'tcp[tcpflags]&(tcp-ack)!=0)'  # + ' and dst host ' + LOCAL_IP
+                       'tcp[tcpflags]&(tcp-ack)!=0) and dst host ' + LOCAL_IP
     print('launch sniff:' + LOCAL_IP)
     save_log_to_db(level='info', name='端口监听',
                    description='开启端口监听,本机IP :' + LOCAL_IP)

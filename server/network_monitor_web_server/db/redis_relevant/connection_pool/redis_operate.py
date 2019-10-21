@@ -12,6 +12,8 @@
 """
 import json
 import redis
+
+from common.utility.sql_parameter_type_change import TypeChange
 from db.redis_relevant.connection_pool.redis_connection_pool import REDIS_POOL
 
 
@@ -91,10 +93,13 @@ def get_all_key():
 
 
 def main():
-    keys = get_all_key()
+    keys = get_fuzzy_search_keys('*10.40.22.27*')
     for key in keys:
+        a = get_from_redis(key)
         print(key)
+        # a['receive_time'] = TypeChange.date_stamp_to_datetime(a['receive_time'])
+        print(a)
 
 
 if __name__ == '__main__':
-    delete_all_instance_data_from_redis()
+    main()

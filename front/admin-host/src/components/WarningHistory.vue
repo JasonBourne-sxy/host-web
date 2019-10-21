@@ -32,7 +32,7 @@
           <el-table-column
             prop="description"
             label="监控描述"
-            min-width="10%">
+            min-width="20%">
           </el-table-column>
           <el-table-column
             prop="ip"
@@ -42,12 +42,12 @@
           <el-table-column
             prop="port"
             label="端口"
-            min-width="10%">
+            min-width="6%">
           </el-table-column>
           <el-table-column
             prop="check_type"
             label="监控类型"
-            min-width="10%">
+            min-width="6%">
           </el-table-column>
           <el-table-column
             prop="check_time"
@@ -57,7 +57,7 @@
           <el-table-column
             prop="warning_type"
             label="报警类型"
-            min-width="10%">
+            min-width="8%">
           </el-table-column>
           <el-table-column
             prop="comment"
@@ -105,7 +105,7 @@
                     value: 'ping',
                     label: 'ping'
                 }, {
-                    value: '半连接',
+                    value: 'half_connection',
                     label: '半连接'
                 }, {
                     value: '自定义',
@@ -115,9 +115,6 @@
                 sys_id: '',
                 is_use: ''
             }
-        },
-        created() {
-            this.getsys_idData();
         },
         methods: {
             search() {

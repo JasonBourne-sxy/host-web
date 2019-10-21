@@ -10,9 +10,14 @@
                    2019/9/12:
 -------------------------------------------------
 """
-import time
-
-__author__ = 'li'
 from multiprocessing.pool import ThreadPool  # 导入线程池
 
-EXECUTOR_POOL = ThreadPool(10)
+
+def create_executor_pool(threading_num=20):
+    """
+    create executor pool
+    :param threading_num:
+    :return:
+    """
+    pool = ThreadPool(threading_num)
+    return pool

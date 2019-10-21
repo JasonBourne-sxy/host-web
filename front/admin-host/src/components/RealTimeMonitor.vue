@@ -38,7 +38,7 @@
           <el-table-column
             prop="description"
             label="监控描述"
-            min-width="10%">
+            min-width="20%">
           </el-table-column>
           <el-table-column
             prop="ip"
@@ -47,18 +47,18 @@
           </el-table-column>
           <el-table-column
             prop="port"
-            label="端口号"
-            min-width="8%">
+            label="端口"
+            min-width="6%">
           </el-table-column>
           <el-table-column
             prop="type"
             label="监控类型"
-            min-width="8%">
+            min-width="6%">
           </el-table-column>
           <el-table-column
             prop="check_result"
             label="检测结果"
-            min-width="8%">
+            min-width="6%">
           </el-table-column>
           <el-table-column
             prop="response_time"
@@ -73,7 +73,7 @@
           <el-table-column
             prop="start_time"
             label="检查时间"
-            min-width="8%">
+            min-width="10%">
           </el-table-column>
         </el-table>
         <template>
