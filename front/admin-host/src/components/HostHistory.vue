@@ -1,8 +1,30 @@
 <template>
+  <el-container style="height: 100%; border: 1px solid #eee">
+    <el-container>
+      <el-header style="text-align: left; font-size: 12px">
+        <label>日期：</label>
+        <el-date-picker
+          v-model="dataValue"
+          type="datetimerange"
+          range-separator="至"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期">
+        </el-date-picker>
+        <el-button type="primary" icon="el-icon-search" @click="search">查询</el-button>
+        <el-button type="primary" icon="el-icon-refresh" @click="refresh">重置</el-button>
+        <el-button type="primary" icon="el-icon-back" @click="goBack">返回</el-button>
 
+      </el-header>
+      <el-main>
+        <div id="myChart" style="width: 98%;height: 300px"></div>
+      </el-main>
+    </el-container>
+  </el-container>
 </template>
 
 <script>
+
+    import spuApi from '../api/spu.api'
 
     export default {
         name: "HostHistory",
@@ -63,18 +85,42 @@
                         },
 
                     ]
-                }
+                },
+                dataValue: [new Date(), new Date()],
+                params:{}
             }
         },
         created(){
-          this.initEcharts();
+            this.params = this.$route.params
         },
         methods:{
            initEcharts(){
                this.echarts = require('echarts');
                this.myCharts = this.echarts.init(document.getElementById("myChart"));
                this.myCharts.setOption(this.option);
-           }
+           },
+          search() {
+              this.loading = true;
+              let dataTime  = this.dataValue;
+              let params = {
+                  ip:this.params.ip,
+                  port:this.params.port,
+                  check_type:this.params.type,
+                  start_time:dataTime[0],
+                  end_time:dataTime[1]
+              };
+              spuApi.get_monitor_history(params).then(res=>{
+                  this.loading = false;
+                  console.log(res)
+              })
+              this.initEcharts();
+          },
+          refresh() {
+              this.dataValue = [new Date(), new Date()];
+          },
+          goBack(){
+              this.$router.push({name: "RealTimeMonitor"});
+          }
         }
 
     }

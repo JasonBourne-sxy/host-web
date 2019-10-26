@@ -75,6 +75,20 @@
             label="检查时间"
             min-width="10%">
           </el-table-column>
+          <el-table-column
+            fixed="right"
+            label="操作"
+            width="150">
+            <template slot-scope="scope">
+              <el-button
+                @click.native.prevent="searchHistory(scope.$index, scope.row)"
+                type="text"
+                icon="el-icon-search"
+                size="small">
+                历史状态
+              </el-button>
+            </template>
+          </el-table-column>
         </el-table>
         <template>
           <el-dialog title="新增" :visible.sync="dialogFormVisible">
@@ -126,6 +140,7 @@
 
 <script>
     import spuApi from '../api/spu.api'
+    import HostHistory from "./HostHistory"
 
     export default {
         data() {
@@ -194,6 +209,11 @@
                 this.dateValue = [new Date(), new Date()];
                 this.checkType = '';
                 this.check_result = '';
+            },
+            searchHistory(index,row){
+                console.log(row)
+                this.$router.push({name: "HostHistory", params: row});
+
             }
         }
     };

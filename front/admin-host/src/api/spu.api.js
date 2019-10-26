@@ -36,6 +36,11 @@ class SpuApi {
   static insert_or_update_system_info(data) {
     return axios.post('/insert_or_update_system_info', data)
   }
+
+  static get_monitor_history(data) {
+    return axios.post('/get_monitor_history_data', data)
+  }
+
 }
 
 export default SpuApi
