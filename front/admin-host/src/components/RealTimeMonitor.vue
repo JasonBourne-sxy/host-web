@@ -212,8 +212,12 @@
             },
             searchHistory(index,row){
                 console.log(row);
-                this.$router.push({name: "HostHistory", params: row});
-
+                // this.$router.push({name: "HostHistory", params: row});
+                const { href } = this.$router.resolve({
+                    name: `HostHistory`,
+                    params:row
+                });
+                window.open(href, "_blank");
             }
         }
     };

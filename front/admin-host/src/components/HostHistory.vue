@@ -93,6 +93,7 @@
         },
         created() {
             this.params = this.$route.params
+            console.log(this.params);
         },
         methods: {
             initEcharts() {
