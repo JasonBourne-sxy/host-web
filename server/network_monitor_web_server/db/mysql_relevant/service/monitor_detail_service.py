@@ -34,16 +34,20 @@ class MonitorDetailService:
         ip = json_obj['ip']
         check_type = json_obj['check_type']
         port = 0
-        if 'port' in json_obj['port']:
+        if 'port' in json_obj:
             port = str(json_obj['port'])
-        start_time = json_obj['start_time']
-        end_time = json_obj['end_time']
+        start_time = json_obj['start_time'].replace('T', ' ').split('.')[0]
+        end_time = json_obj['end_time'].replace('T', ' ').split('.')[0]
         if check_type == '半连接':
             check_type = 'half_connection'
-            sql = QUERY_MONITOR_DETAIL_HALF_CONNECTION % start_time, end_time, ip, port, check_type
+            sql = QUERY_MONITOR_DETAIL_HALF_CONNECTION % (start_time, end_time, ip, port, check_type)
         else:
-            sql = QUERY_MONITOR_DETAIL_PING % start_time, end_time, ip, check_type
-        return DB_POOL.select(sql)
+            sql = QUERY_MONITOR_DETAIL_PING % (start_time, end_time, ip, check_type)
+        sql = sql + ' order by start_time asc'
+        print(sql)
+        res = DB_POOL.select(sql)
+        filter_monitor_result = MonitorDetailService.__filter_monitor_detail(res)
+        return filter_monitor_result
 
     @staticmethod
     def save_check_result_to_detail(results):
@@ -70,3 +74,36 @@ class MonitorDetailService:
                        pymysql.escape_string(str(result.interval)))
             sqls.append(sql)
         DB_POOL.execute_sql_array(sqls)
+
+    @staticmethod
+    def __filter_monitor_detail(res):
+        """
+        fiter monitor detail
+        :param res:
+        :return:
+        """
+        time_array = []
+        check_result_array = []
+        last_state = None
+        total_length = len(res)
+        for index, result in enumerate(res):
+            check_time = str(result['start_time'])
+            check_result = result['result'] == 'True'
+            if check_result:
+                check_result = 1
+            else:
+                check_result = 0
+            if index == total_length - 1:
+                time_array.append(check_time)
+                check_result_array.append(check_result)
+                return time_array, check_result_array
+            if last_state is None:
+                time_array.append(check_time)
+                check_result_array.append(check_result)
+                last_state = check_result
+            else:
+                if last_state != check_result:
+                    time_array.append(check_time)
+                    check_result_array.append(check_result)
+                    last_state = check_result
+        return time_array, check_result_array

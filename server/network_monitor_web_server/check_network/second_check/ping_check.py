@@ -24,7 +24,7 @@ def final_ping_check(host):
     """
     ip_id, icmp_id, icmp_seq = randint(1, 65535), randint(1, 65535), randint(1, 65535)
     ping_packet = IP(dst=host, ttl=64, id=ip_id) / ICMP(id=icmp_id, seq=icmp_seq) / b'rootkit'
-    result = sr1(ping_packet, verbose=False, timeout=2)
+    result = sr1(ping_packet, verbose=False, timeout=0.5)
     if result is None:
         return False
     return True

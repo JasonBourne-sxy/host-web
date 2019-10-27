@@ -10,12 +10,12 @@
                    2019/10/3:
 -------------------------------------------------
 """
-import threading
 import time
-
 from check_network.monitor.check_instances import CheckInstances
 from check_network.monitor.half_connection_check import HalfConnectionCheck
 from check_network.monitor.ping_instances_check import PingCheck
+from check_network.second_check.recheck_interface import get_success_and_fail_result, \
+    recheck_failed_results
 from check_network.warning_util.warning_operate import WarningOperate
 from db.mysql_relevant.connection_pool.db_pool import DB_POOL
 from db.mysql_relevant.object_mapping.monitor_visualization import MONITOR_VISUALIZATION
@@ -65,10 +65,12 @@ class Monitor:
         while True:
 
             intervals = CheckInstances.get_all_interval()
-            check_intervals = CheckInstances.get_check_interval(intervals, current_second)
+            check_intervals = CheckInstances.get_check_interval(intervals,
+                                                                current_second)
             if len(check_intervals) > 0:
-                threading.Thread(target=self.check_by_interval, args=(check_intervals,)).start()
-                # self.check_by_interval(check_intervals)
+                # threading.Thread(target=self.check_by_interval,
+                #                  args=(check_intervals,)).start()
+                self.check_by_interval(check_intervals)
             time.sleep(1)
             current_second = current_second + 1
 
@@ -83,12 +85,26 @@ class Monitor:
         ping_result = PingCheck(ping_instances).get_ping_result()
         half_connection_result = HalfConnectionCheck(half_instances). \
             get_half_connection_result()  # check condition
-        for result in (ping_result, half_connection_result):
-            MonitorDetailService.save_check_result_to_detail(result)
-            self.update_monitor_visualization_db(result)
-            to_warning_items = self.warning_operate. \
-                save_warning_history_to_db(result)
-            WarningOperate.send_warning_to_wechat(to_warning_items)
+        success_results, fail_results = get_success_and_fail_result(ping_result +
+                                                                    half_connection_result)
+        self.handle_check_results(success_results)
+        recheck_result = recheck_failed_results(fail_results)
+        self.handle_check_results(recheck_result)
+        pass
+
+    def handle_check_results(self, result):
+        """
+        handle check results
+        :return:5
+        """
+        start_time = time.time()
+        MonitorDetailService.save_check_result_to_detail(result)
+        self.update_monitor_visualization_db(result)
+        to_warning_items = self.warning_operate. \
+            save_warning_history_to_db(result)
+        WarningOperate.send_warning_to_wechat(to_warning_items)
+        end_time = time.time()
+        print('handle check results finish ,cost' + str(start_time - end_time) + ',size : ' + str(len(result)))
 
     @staticmethod
     def update_monitor_visualization_db(result):

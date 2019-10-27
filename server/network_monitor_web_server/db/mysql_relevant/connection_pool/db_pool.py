@@ -80,19 +80,33 @@ class MySQL_Util_Pool:
     def execute_sql_array(self, sqls):
         if len(sqls) == 0:
             return {'result': False}
-        conn = self.pool.connection()
+        conn = self.__create_one_con()
         cursor = conn.cursor()
+        current_sql = ''
         try:
             for sql in sqls:
+                current_sql = sql
                 cursor.execute(sql)
             conn.commit()
             return {'result': True, 'id': int(cursor.lastrowid)}
         except Exception as err:
-            print(sqls)
+            print(current_sql)
             raise err
         finally:
             cursor.close()
             conn.close()
+
+    @staticmethod
+    def __create_one_con():
+        """
+        get one con
+        :return:
+        """
+        return pymysql.connect(
+            host=DB_IP,
+            user=DB_USER, password=DB_PASSWORD,
+            database=DB_NAME,
+            charset='utf8')
 
 
 DB_POOL = MySQL_Util_Pool()

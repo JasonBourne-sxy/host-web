@@ -106,9 +106,9 @@ class MonitorVisualizationService:
         :return:
         """
         ip, check_type, sys_name, check_result = json_obj['ip'], \
-                                             json_obj['check_type'], \
-                                             json_obj['sys_name'], \
-                                             json_obj['check_result']
+                                                 json_obj['check_type'], \
+                                                 json_obj['sys_name'], \
+                                                 json_obj['check_result']
         base_sql = QUERY_REAL_TIME_MONITOR_RESULT_BASE_SQL
         if ip is not None and len(ip) > 0:
             base_sql = base_sql + " and ip like '%" + ip + "%'"

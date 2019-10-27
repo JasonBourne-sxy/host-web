@@ -79,12 +79,12 @@ class HalfConnectionCheck(object):
             end_time = value['receive_time']
             cost_time = abs(end_time - package.start_time)
             if cost_time > 10:
-                print(value)
                 package.is_success = False
                 continue
             package.is_success = True
             package.end_time = end_time
-            package.interval = int(abs(package.end_time - package.start_time) * 1000)
+            package.interval = int(abs(package.end_time -
+                                       package.start_time) * 1000)
         return self.send_packet
 
 

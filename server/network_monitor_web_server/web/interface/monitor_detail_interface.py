@@ -10,9 +10,9 @@
                    2019/9/27:
 -------------------------------------------------
 """
+from db.mysql_relevant.service.monitor_detail_service import MonitorDetailService
 from db.mysql_relevant.service.monitor_visualization_service import MonitorVisualizationService
 
-__author__ = 'li'
 
 import json
 
@@ -36,3 +36,16 @@ def receive_image_interface():
     return_detail = MonitorVisualizationService. \
         get_monitor_visualization(sys_id, check_type)
     return create_json_response(return_detail)
+
+
+@app.route('/get_monitor_history_data', methods=['POST'])
+@cross_origin()
+def get_monitor_history():
+    """
+    ocr interface for python
+    :return:
+    """
+    data_byte = request.data  # 获取 JSON 数据
+    json_obj = json.loads(str(data_byte, encoding='utf8'))
+    result = MonitorDetailService.get_monitor_history_data(json_obj)
+    return create_json_response(result)

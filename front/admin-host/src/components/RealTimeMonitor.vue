@@ -211,7 +211,7 @@
                 this.check_result = '';
             },
             searchHistory(index,row){
-                console.log(row)
+                console.log(row);
                 this.$router.push({name: "HostHistory", params: row});
 
             }

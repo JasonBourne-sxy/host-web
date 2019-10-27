@@ -21,7 +21,7 @@ def final_tcp_check(ip, port):
     :return:
     """
     client = socket.socket()
-    client.settimeout(2)
+    client.settimeout(0.5)
     is_connected = True
     try:
         client.connect((ip, port))

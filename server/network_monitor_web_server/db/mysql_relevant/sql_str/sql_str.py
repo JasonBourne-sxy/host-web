@@ -31,6 +31,6 @@ INSERT_LOG = """INSERT INTO `log` (`id`,`log_level`,`time`,`name`,`description`)
 SELECT_INSTANCE_FROM_SYS_ID = """SELECT * FROM `monitor_instance` WHERE sys_id ='%s';"""
 SELECT_VISUAL_FROM_CHECK_TYPE = """SELECT * FROM `monitor_visualization` WHERE check_type ='%s';"""
 QUERY_MONITOR_INSTANCE = """SELECT * FROM `monitor_instance` where 1=1 """
-QUERY_MONITOR_DETAIL_HALF_CONNECTION = """SELECT * FROM `monitor_detail` WHERE start_time BETWEEN '%s' AND '%s' AND ip = '%s' AND PORT = %s AND check_type = '%s';"""
-QUERY_MONITOR_DETAIL_PING = """SELECT * FROM `monitor_detail` WHERE start_time BETWEEN '%s' AND '$s' AND ip = '%s'  AND check_type = '%s';"""
+QUERY_MONITOR_DETAIL_HALF_CONNECTION = """SELECT * FROM `monitor_detail` WHERE start_time BETWEEN '%s' AND '%s' AND ip = '%s' AND PORT = %s AND check_type = '%s'"""
+QUERY_MONITOR_DETAIL_PING = """SELECT * FROM `monitor_detail` WHERE start_time BETWEEN '%s' AND '$s' AND ip = '%s'  AND check_type = '%s'"""
 QUERY_SYS_INFO = """SELECT * FROM `system_info` where 1=1 """

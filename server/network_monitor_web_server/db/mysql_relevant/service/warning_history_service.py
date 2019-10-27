@@ -87,7 +87,7 @@ class WarningHistoryService:
     def get_tcp_last_state(item):
         ip = item.ip
         sql = SELECT_WARNING_HISTORY_BASE + """ and
-            check_type = '半连接' and ip = '%s' order by check_time desc;""" % ip
+            check_type = 'half_connection' and ip = '%s' order by check_time desc;""" % ip
         res = DB_POOL.select(sql)
         return res
 
