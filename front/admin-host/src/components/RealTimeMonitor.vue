@@ -210,14 +210,20 @@
                 this.checkType = '';
                 this.check_result = '';
             },
-            searchHistory(index,row){
+            searchHistory(index, row) {
                 console.log(row);
                 // this.$router.push({name: "HostHistory", params: row});
                 let routerData = this.$router.resolve({
                     name: `HostHistory`,
-                    params:row
+                    params: row
                 });
-                window.open(routerData.href+'?ip='+row.ip+'&port='+row.port+'&check_type='+row.type, "_blank");
+                let check_type = '';
+                if (row.type === '半连接') {
+                    check_type = 'half_connection'
+                } else {
+                    check_type = 'ping'
+                }
+                window.open(routerData.href + '?ip=' + row.ip + '&port=' + row.port + '&check_type=' + check_type, "_blank");
             }
 
         }
