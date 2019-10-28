@@ -59,29 +59,34 @@
                         {
                             type: 'category',
                             boundaryGap: false,
-                            data: []
+                            data: ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00']
                         }
                     ],
                     yAxis: [
                         {
                             type: 'value',
                             minInterval: 1,
-                            axisLabel: {
-                                formatter: '{value} '
-                            }
+                            axisLabel:{
+                                formatter: function (value) {
+                                    var texts = [];
+                                    if(value==1){
+                                        texts.push('正常');
+                                    }
+                                    else if (value==0) {
+                                        texts.push('异常');
+                                    }
+
+                                    return texts;
+                                }
+                            },
                         }
                     ],
                     series: [
                         {
                             name: '状态',
                             type: 'line',
-                            data: [],
-                            markPoint: {
-                                data: [
-                                    {type: 'max', name: '最大值'},
-                                    {type: 'min', name: '最小值'}
-                                ]
-                            },
+                            data: [1, 1, 0, 0, 1, 1, 0],
+
 
                         },
 
