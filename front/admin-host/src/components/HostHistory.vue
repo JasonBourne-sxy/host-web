@@ -88,12 +88,21 @@
                     ]
                 },
                 dataValue: [new Date(), new Date()],
-                params: {}
+                params: {},
+                ip:'',
+                port:'',
+                check_type: ''
             }
         },
         created() {
-            this.params = this.$route.params
-            console.log(this.params);
+
+        },
+        mounted(){
+
+            this.ip = this.getQueryVariable("ip")
+            this.port = this.getQueryVariable("port")
+            this.check_type = this.getQueryVariable("check_type")
+            this.initEcharts();
         },
         methods: {
             initEcharts() {
@@ -105,9 +114,9 @@
                 this.loading = true;
                 let dataTime = this.dataValue;
                 let params = {
-                    ip: this.params.ip,
-                    port: this.params.port,
-                    check_type: this.params.type,
+                    ip: this.ip,
+                    port: this.port,
+                    check_type: this.check_type,
                     start_time: dataTime[0],
                     end_time: dataTime[1]
                 };
@@ -200,6 +209,15 @@
             },
             goBack() {
                 this.$router.push({name: "RealTimeMonitor"});
+            },
+            getQueryVariable(variable){
+                var query = window.location.href.split("?");
+                var vars = query[1].split("&");
+                for (var i=0;i<vars.length;i++) {
+                    var pair = vars[i].split("=");
+                    if(pair[0] == variable){return pair[1];}
+                }
+                return(false);
             }
         }
 

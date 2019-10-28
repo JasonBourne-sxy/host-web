@@ -213,12 +213,13 @@
             searchHistory(index,row){
                 console.log(row);
                 // this.$router.push({name: "HostHistory", params: row});
-                const { href } = this.$router.resolve({
+                let routerData = this.$router.resolve({
                     name: `HostHistory`,
                     params:row
                 });
-                window.open(href, "_blank");
+                window.open(routerData.href+'?ip='+row.ip+'&port='+row.port+'&check_type='+row.type, "_blank");
             }
+
         }
     };
 </script>
